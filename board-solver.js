@@ -3,16 +3,6 @@
 	2022
 */
 
-/*	General idea:
-	The board is represented as a table of cells. Each cell describes the 4 possibilities
-	of displacement from there (i.e. where the walls are).
-	On top of that there is a list of the various objectives 
-	(at the moment ignoring the free-for-all).
-	Finally, the board state is made of the position of the four robots.
-	It also contains the number of moves ? Probably not (not needed)
-	It might also contain the last move or something like this
-*/
-
 /*	Search principle:
 	We use a tree search, breath-first.
 	Some pruning is done using a hash set.
@@ -31,14 +21,20 @@ const displayedBoard = document.getElementById("board");
 /*	Initialize display for board
 */
 
+const displayedBoardCells = []
+
 for (let i = 0; i < 16; ++i) {
-	row = document.createElement("tr");
+	displayedBoardCells.push([])
 	for (let j = 0; j < 16; ++j) {
-		cell = document.createElement("td");
+		cell = document.createElement("div");
+		cell.style.aspectRatio = "1/1";
+		cell.style.backgroundColor = "#eeeee4";
+		cell.style.alignItems = "center";
+		cell.style.boxSizing = "border-box";
 		cell.textContent = "...";
-		row.appendChild(cell);
+		displayedBoard.appendChild(cell);
+		displayedBoardCells[i].push(cell);
 	}
-	displayedBoard.appendChild(row);
 }
 
 /* 	Temp implementation to check that this is possible
@@ -81,7 +77,7 @@ const board = [
 
 for (let i = 0; i < 16; ++i) {
 	for (let j = 0; j < 16; ++j) {
-		cell = displayedBoard.getElementsByTagName("tr")[i].getElementsByTagName("td")[j];
+		cell = displayedBoardCells[i][j];
 		walls = board[i][j];
 		cell.style.borderTop = (walls & N) ? "solid" : "none";
 		cell.style.borderLeft = (walls & W) ? "solid" : "none";
@@ -110,26 +106,11 @@ const isSolved = (r, g, b, y) => {
 /*	Display robots and goal
 */
 
-displayedBoard
-	.getElementsByTagName("tr")[R.y]
-	.getElementsByTagName("td")[R.x]
-	.innerHTML = `<font style="background-color:red"> ⛑ </font>`;
-displayedBoard
-	.getElementsByTagName("tr")[G.y]
-	.getElementsByTagName("td")[G.x]
-	.innerHTML = `<font style="background-color:green"> ⛑ </font>`;
-displayedBoard
-	.getElementsByTagName("tr")[B.y]
-	.getElementsByTagName("td")[B.x]
-	.innerHTML = `<font style="background-color:blue; color:white"> ⛑ </font>`;
-displayedBoard
-	.getElementsByTagName("tr")[Y.y]
-	.getElementsByTagName("td")[Y.x]
-	.innerHTML = `<font style="background-color:yellow"> ⛑ </font>`;
-displayedBoard
-	.getElementsByTagName("tr")[GOAL.y]
-	.getElementsByTagName("td")[GOAL.x]
-	.innerHTML = `<font style="color:white; background-color:orange"> ☉ </font>`;
+displayedBoardCells[R.y][R.x].innerHTML = `<font style="background-color:red"> ⛑ </font>`;
+displayedBoardCells[G.y][G.x].innerHTML = `<font style="background-color:green"> ⛑ </font>`;
+displayedBoardCells[B.y][B.x].innerHTML = `<font style="background-color:blue; color:white"> ⛑ </font>`;
+displayedBoardCells[Y.y][Y.x].innerHTML = `<font style="background-color:yellow"> ⛑ </font>`;
+displayedBoardCells[GOAL.y][GOAL.x].innerHTML = `<font style="color:white; background-color:orange"> ☉ </font>`;
 /*	Moves and blocking walls
 */
 
