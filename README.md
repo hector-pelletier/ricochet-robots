@@ -1,10 +1,12 @@
 # Ricochet Robots Solver
 
 A small implementation of the game Ricochet Robots, intended as a way to check for efficient solutions.
+
 The project originated as a way for me to learn about HTML and JS.
 I also intend to use it to be as obnoxious as possible around the giant board at a coming board games night.
 
 [Learn to play the game.](https://en.wikipedia.org/wiki/Ricochet_Robot)
+
 [Come test the webpage.](https://hector-pelletier.github.io/ricochet-robots/)
 
 ## What remains to be done ?
