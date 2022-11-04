@@ -31,7 +31,6 @@ for (let i = 0; i < 16; ++i) {
 		cell.style.backgroundColor = "#eeeee4";
 		cell.style.alignItems = "center";
 		cell.style.boxSizing = "border-box";
-		cell.textContent = "...";
 		displayedBoard.appendChild(cell);
 		displayedBoardCells[i].push(cell);
 	}
@@ -106,11 +105,12 @@ const isSolved = (r, g, b, y) => {
 /*	Display robots and goal
 */
 
-displayedBoardCells[R.y][R.x].innerHTML = `<font style="background-color:red"> ⛑ </font>`;
-displayedBoardCells[G.y][G.x].innerHTML = `<font style="background-color:green"> ⛑ </font>`;
-displayedBoardCells[B.y][B.x].innerHTML = `<font style="background-color:blue; color:white"> ⛑ </font>`;
-displayedBoardCells[Y.y][Y.x].innerHTML = `<font style="background-color:yellow"> ⛑ </font>`;
-displayedBoardCells[GOAL.y][GOAL.x].innerHTML = `<font style="color:white; background-color:orange"> ☉ </font>`;
+displayedBoardCells[R.y][R.x].style.backgroundColor = "red";
+displayedBoardCells[G.y][G.x].style.backgroundColor = "green";
+displayedBoardCells[B.y][B.x].style.backgroundColor = "blue";
+displayedBoardCells[Y.y][Y.x].style.backgroundColor = "yellow";
+displayedBoardCells[GOAL.y][GOAL.x].style.backgroundColor = "orange";
+
 /*	Moves and blocking walls
 */
 
