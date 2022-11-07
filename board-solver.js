@@ -17,6 +17,9 @@
 const solveTrigger = document.getElementById("solve");
 const answer = document.getElementById("solution");
 const displayedBoard = document.getElementById("board"); 
+const setupButton = document.getElementById("place-robots");
+const goalBotButton = document.getElementById("select-robot");
+const contextMenu = document.getElementById("context-menu");
 
 /*	Initialize display for board
 */
@@ -27,6 +30,7 @@ for (let i = 0; i < 16; ++i) {
 	displayedBoardCells.push([])
 	for (let j = 0; j < 16; ++j) {
 		cell = document.createElement("div");
+		cell.id = i * 16 + j;
 		cell.style.aspectRatio = "1/1";
 		cell.style.backgroundColor = "#eeeee4";
 		cell.style.alignItems = "center";
@@ -35,13 +39,6 @@ for (let i = 0; i < 16; ++i) {
 		displayedBoardCells[i].push(cell);
 	}
 }
-
-/* 	Temp implementation to check that this is possible
-	Later this has to be the step that triggers computation + formats result
-*/
-
-/* 	Temp implementation of the solver working in the console
-*/
 
 /* 	Board representation
 */
@@ -99,7 +96,8 @@ const Y = {x: 7, y: 4,};
 const GOAL = {x: 1, y: 13,};
 
 const isSolved = (r, g, b, y) => {
-	return r.x == GOAL.x && r.y == GOAL.y;
+	let bot = {"red":r, "blue":b, "green":g, "yellow":y}[goalBot];
+	return bot.x == GOAL.x && bot.y == GOAL.y;
 };
 
 /*	Display robots and goal
@@ -110,6 +108,89 @@ displayedBoardCells[G.y][G.x].style.backgroundColor = "green";
 displayedBoardCells[B.y][B.x].style.backgroundColor = "blue";
 displayedBoardCells[Y.y][Y.x].style.backgroundColor = "yellow";
 displayedBoardCells[GOAL.y][GOAL.x].style.backgroundColor = "orange";
+
+/*	Handling the setup of pieces
+*/
+
+const initialPos = {"red": R, "blue": B, "green": G, "yellow": Y,  "orange": GOAL};
+
+let piecesSetupState = "red";
+
+const unsetSetupMode = () => {
+	for (let i = 0; i < 16; ++i) {
+		for (let j = 0; j < 16; ++j) {
+			cell = displayedBoardCells[i][j];
+			let newCell = cell.cloneNode(true);
+			cell.parentNode.replaceChild(newCell, cell);
+			displayedBoardCells[i][j] = newCell;
+		}
+	}
+};
+
+const setSelectFunction = (X, Y) => {
+	const setupHook = () => {
+		bot = initialPos[piecesSetupState];
+		displayedBoardCells[bot.y][bot.x].style.backgroundColor = "#eeeee4";
+		bot.x = X;
+		bot.y = Y;
+		displayedBoardCells[bot.y][bot.x].style.backgroundColor = piecesSetupState;
+		switch(piecesSetupState) {
+			case "red":
+				piecesSetupState = "green";
+				break;
+			case "green":
+				piecesSetupState = "blue";
+				break;
+			case "blue":
+				piecesSetupState = "yellow";
+				break;
+			case "yellow":
+				piecesSetupState = "orange";
+				break;
+			case "orange":
+				unsetSetupMode();
+				break;
+		}
+	};
+	
+	return setupHook;
+};
+
+const setSetupMode = () => {
+	piecesSetupState = "red";
+	for (let i = 0; i < 16; ++i) {
+		for (let j = 0; j < 16; ++j) {
+			cell = displayedBoardCells[i][j];
+			cell.addEventListener("click", setSelectFunction(j, i));
+		}
+	}
+};
+
+setupButton.addEventListener("click", setSetupMode);
+
+/*	Handling the selection of the goal bot
+*/
+
+let goalBot = "red";
+
+const selectBotFun = (color) => {
+	const selectBotHook = () => {
+		goalBot = color;
+		contextMenu.innerHTML = '';
+	};
+	return selectBotHook;
+};
+
+const selectBotHook = () => {
+	for (botColor of ["red", "green", "blue", "yellow"]) {
+		let buttonColor = document.createElement("button");
+		buttonColor.textContent = botColor;
+		buttonColor.addEventListener("click", selectBotFun(botColor));
+		contextMenu.appendChild(buttonColor);
+	}
+};
+
+goalBotButton.addEventListener("click", selectBotHook);
 
 /*	Moves and blocking walls
 */
