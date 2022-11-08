@@ -20,6 +20,7 @@ const displayedBoard = document.getElementById("board");
 const setupButton = document.getElementById("place-robots");
 const goalBotButton = document.getElementById("select-robot");
 const contextMenu = document.getElementById("context-menu");
+const setupBoardButton = document.getElementById("arrange-board");
 
 /*	Initialize display for board
 */
@@ -191,6 +192,96 @@ const selectBotHook = () => {
 };
 
 goalBotButton.addEventListener("click", selectBotHook);
+
+/*	Setting up the board.
+*/
+
+let boardSetupState = false;
+
+const getWallSetupFun = (i, j) => {
+	const setupCellFun = () => {
+		contextMenu.innerHTML = '';
+		
+		const up = document.createElement("button");
+		up.textContent = "upper wall";
+		const toggleUpperWall = () => {
+			if (i > 0) {
+				board[i][j] ^= N;
+				board[i-1][j] ^= S;
+				displayedBoardCells[i][j].style.borderTop = (board[i][j] & N) ? "solid" : "none";
+				displayedBoardCells[i-1][j].style.borderBottom = (board[i][j] & N) ? "solid" : "none";
+			}
+		};
+		up.addEventListener("click", toggleUpperWall);
+		
+		const down = document.createElement("button");
+		down.textContent = "bottom wall";
+		const toggleBottomWall = () => {
+			if (i < 15) {
+				board[i][j] ^= S;
+				board[i+1][j] ^= N;
+				displayedBoardCells[i][j].style.borderBottom = (board[i][j] & S) ? "solid" : "none";
+				displayedBoardCells[i+1][j].style.borderTop = (board[i][j] & S) ? "solid" : "none";
+			}
+		};
+		down.addEventListener("click", toggleBottomWall);
+		
+		const right = document.createElement("button");
+		right.textContent = "right wall";
+		const toggleRightWall = () => {
+			if (j < 15) {
+				board[i][j] ^= E;
+				board[i][j+1] ^= W;
+				displayedBoardCells[i][j].style.borderRight = (board[i][j] & E) ? "solid" : "none";
+				displayedBoardCells[i][j+1].style.borderLeft = (board[i][j] & E) ? "solid" : "none";
+			}
+		};
+		right.addEventListener("click", toggleRightWall);
+		
+		const left = document.createElement("button");
+		left.textContent = "left wall";
+		const toggleLeftWall = () => {
+			if (j > 0) {
+				board[i][j] ^= W;
+				board[i][j-1] ^= E;
+				displayedBoardCells[i][j].style.borderLeft = (board[i][j] & W) ? "solid" : "none";
+				displayedBoardCells[i][j-1].style.borderRight = (board[i][j] & W) ? "solid" : "none";
+			}
+		};
+		left.addEventListener("click", toggleLeftWall);
+		
+		contextMenu.appendChild(up);
+		contextMenu.appendChild(down);
+		contextMenu.appendChild(left);
+		contextMenu.appendChild(right);
+	};
+	return setupCellFun;
+};
+
+const setupBoardHook = () => {
+	if (boardSetupState) {
+		for (let i = 0; i < 16; ++i) {
+			for (let j = 0; j < 16; ++j) {
+				cell = displayedBoardCells[i][j];
+				let newCell = cell.cloneNode(true);
+				cell.parentNode.replaceChild(newCell, cell);
+				displayedBoardCells[i][j] = newCell;
+			}
+		}
+		contextMenu.innerHTML = '';
+		boardSetupState = false;
+	} else {
+		for (let i = 0; i < 16; ++i) {
+			for (let j = 0; j < 16; ++j) {
+				cell = displayedBoardCells[i][j];
+				cell.addEventListener("click", getWallSetupFun(i,j));
+			}
+		}
+		boardSetupState = true;
+	}
+};
+
+setupBoardButton.addEventListener("click", setupBoardHook);
 
 /*	Moves and blocking walls
 */
