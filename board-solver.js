@@ -32,10 +32,6 @@ for (let i = 0; i < 16; ++i) {
 	for (let j = 0; j < 16; ++j) {
 		cell = document.createElement("div");
 		cell.id = i * 16 + j;
-		cell.style.aspectRatio = "1/1";
-		cell.style.backgroundColor = "#eeeee4";
-		cell.style.alignItems = "center";
-		cell.style.boxSizing = "border-box";
 		displayedBoard.appendChild(cell);
 		displayedBoardCells[i].push(cell);
 	}
@@ -76,10 +72,10 @@ for (let i = 0; i < 16; ++i) {
 	for (let j = 0; j < 16; ++j) {
 		cell = displayedBoardCells[i][j];
 		walls = board[i][j];
-		cell.style.borderTop = (walls & N) ? "solid" : "none";
-		cell.style.borderLeft = (walls & W) ? "solid" : "none";
-		cell.style.borderRight = (walls & E) ? "solid" : "none";
-		cell.style.borderBottom = (walls & S) ? "solid" : "none";
+		cell.style.borderTopWidth = (walls & N) ? "medium" : "thin";
+		cell.style.borderLeftWidth = (walls & W) ? "medium" : "thin";
+		cell.style.borderRightWidth = (walls & E) ? "medium" : "thin";
+		cell.style.borderBottomWidth = (walls & S) ? "medium" : "thin";
 	}
 }
 
@@ -104,10 +100,10 @@ const isSolved = (r, g, b, y) => {
 /*	Display robots and goal
 */
 
-displayedBoardCells[R.y][R.x].style.backgroundColor = "red";
-displayedBoardCells[G.y][G.x].style.backgroundColor = "green";
-displayedBoardCells[B.y][B.x].style.backgroundColor = "blue";
-displayedBoardCells[Y.y][Y.x].style.backgroundColor = "yellow";
+displayedBoardCells[R.y][R.x].classList.toggle("red");
+displayedBoardCells[G.y][G.x].classList.toggle("green");
+displayedBoardCells[B.y][B.x].classList.toggle("blue");
+displayedBoardCells[Y.y][Y.x].classList.toggle("yellow");
 displayedBoardCells[GOAL.y][GOAL.x].style.backgroundColor = "orange";
 
 /*	Handling the setup of pieces

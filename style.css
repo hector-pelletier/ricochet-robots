@@ -1,0 +1,81 @@
+/*
+	Styles for the ricochet robots web app
+	
+	Hector Pelletier, 2022
+*/
+
+/* Global theme constants */
+
+:root {
+	--grid-background-color: #F2E6DF;
+	--walls-color: #0D0D0D;
+	--red-color: #F26A4B;
+	--green-color: #027333;
+	--blue-color: #023373;
+	--yellow-color: #F29F05;
+}
+
+body {
+	font-family: "Helvetica", sans-serif;
+	font-size: 100%;
+	
+	text-align: center
+}
+
+/* Text */
+
+h1 {
+	font-family: "Courier new", monospace;
+	font-weight: bold;
+	font-variant: small-caps;
+	font-size: 1.4em;
+}
+
+/* Controls */
+
+button.commands {
+	
+}
+
+button.solve {
+	
+}
+
+/* Board */
+
+#board {
+	display: grid; 
+	grid-template-columns: repeat(16, 1fr);
+	
+	background-color: var(--walls-color);
+}
+
+/* Cells */
+
+#board div {
+	background-color: var(--grid-background-color);
+	border-color: var(--walls-color);
+	border-width: thin;
+	border-style: solid;
+	border-radius: 3%;
+	
+	aspect-ratio: 1/1;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+#board div.red {
+	background-color: var(--red-color);
+}
+
+#board div.green {
+	background-color: var(--green-color);
+}
+
+#board div.blue {
+	background-color: var(--blue-color);
+}
+
+#board div.yellow {
+	background-color: var(--yellow-color);
+}
