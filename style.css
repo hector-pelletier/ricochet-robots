@@ -19,6 +19,10 @@ body {
 	font-family: "Helvetica", sans-serif;
 	font-size: 100%;
 	
+	max-width: 550px;
+	margin: auto;
+	padding: 2%;
+	
 	text-align: center
 }
 

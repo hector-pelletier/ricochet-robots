@@ -7,17 +7,17 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<h1 style="text-align:center">Ricochet Robots Solver</h1>
-		<div id="controls" style="width:100%; text-align:center">
+		<h1>Ricochet Robots Solver</h1>
+		<div id="controls">
 			<button id="solve">Solve</button>
 			<button id="place-robots">Setup pieces</button>
 			<button id="select-robot">Select robot</button>
 			<button id="arrange-board">Setup board</button>
 		</div>
 		<div id="context-menu"></div>
-		<div id="board", style="display: grid; grid-template-columns: repeat(16, 1fr)"></div>
-		<p id="context" style="width:100%; background-color:#ffcc99; text-align:center">Considered problem : Bring red bot to the target</p>
-		<p id="solution" style="text-align:center">Results zone.</p>
+		<div id="board"></div>
+		<p id="context">Considered problem : Bring red bot to the target</p>
+		<p id="solution">Results zone.</p>
 		<script type="text/javascript" src="board-solver.js"></script>
 	</body>
 </html>
