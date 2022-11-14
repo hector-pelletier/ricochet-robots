@@ -92,6 +92,8 @@ const Y = {x: 7, y: 4,};
 
 const GOAL = {x: 1, y: 13,};
 
+let goalBot = "red";
+
 const isSolved = (r, g, b, y) => {
 	let bot = {"red":r, "blue":b, "green":g, "yellow":y}[goalBot];
 	return bot.x == GOAL.x && bot.y == GOAL.y;
@@ -167,8 +169,6 @@ setupButton.addEventListener("click", setSetupMode);
 
 /*	Handling the selection of the goal bot
 */
-
-let goalBot = "red";
 
 const selectBotFun = (color) => {
 	const selectBotHook = () => {
@@ -320,10 +320,6 @@ const gameStateWith = (color, displacement, moves, r, g, b, y) => {
 	return {moves: moves.concat(color, displacement.name), r: nr, g: ng, b: nb, y: ny};
 }
 
-/*	Data structure used for the search pruning
-*/
-
-const seenPositions = new Set();
 const intFromPos = (r, g, b, y) => {
 	let code = r.x;
 	code = code * 100 + r.y;
@@ -335,12 +331,6 @@ const intFromPos = (r, g, b, y) => {
 	code = code * 100 + y.y;
 	return code;
 };
-
-/*	Data structure used for queuing the moves
-	At the moment, this is done using an over simple implementation.
-*/
-
-const queue = [{moves: [], r: R, g: G, b: B, y: Y}];
 
 /*	How the solver works:
 		- Depop the next position.
@@ -354,37 +344,50 @@ const queue = [{moves: [], r: R, g: G, b: B, y: Y}];
 			- Add the current position to the already seen set
 */
 
+const colors = ["red", "green", "blue", "yellow"];
+const displacements = [
+		{name: "up", ix: 0, iy: -1, block: N},
+		{name: "down", ix: 0, iy: 1, block: S},
+		{name: "right", ix: 1, iy: 0, block: E},
+		{name: "left", ix: -1, iy: 0, block: W},
+	  ];
+
 const solve = () => {
+	/*	Data structure used for queuing the moves
+	At the moment, this is done using an over simple implementation.
+	*/
+	const queue = [{moves: [], r: R, g: G, b: B, y: Y}];
+	
+	/*	Data structure used for the search pruning
+	*/
+	const seenPositions = new Set();
+	
+	seenPositions.add(intFromPos(R, G, B, Y));
 	do {
 		let {moves, r, g, b, y} = queue.shift();
-		let code = intFromPos(r, g, b, y);
-		
-		if (seenPositions.has(code)) {
-			continue;
+		if (isSolved(r, g, b, y)) {
+			return moves;
 		} else {
-			seenPositions.add(code);
-			if (isSolved(r, g, b, y)) {
-				return moves;
-			} else {
-				colors = ["red", "green", "blue", "yellow"];
-				displacements = [
-					{name: "up", ix: 0, iy: -1, block: N},
-					{name: "down", ix: 0, iy: 1, block: S},
-					{name: "right", ix: 1, iy: 0, block: E},
-					{name: "left", ix: -1, iy: 0, block: W},
-				];
-				for (const color of colors) {
-					for (const displacement of displacements) {
-						queue.push(gameStateWith(color, displacement, moves, r, g, b, y));
+			for (const color of colors) {
+				for (const displacement of displacements) {
+					let forwardState = gameStateWith(color, displacement, moves, r, g, b, y);
+					let forwardCode = intFromPos(forwardState.r, forwardState.g, forwardState.b, forwardState.y)
+					if (! seenPositions.has(forwardCode)) {
+						seenPositions.add(forwardCode);
+						queue.push(forwardState);
 					}
 				}
 			}
 		}
-
-	} while (queue.length);
+	} while (queue.length && queue[0].moves.length < 32);
+	return [];
 }
 
 const formatSolve = (moves) => {
+	if (! moves.length) {
+		return `<h2>No found solution</h2>`;
+	}
+	
 	solveString = `<h2>The optimal solution takes ${moves.length / 2} moves</h2><p>`;
 	for (let i = 0; i < moves.length; ++i) {
 		solveString += `<font style="background-color:${moves[i]}">`;
@@ -410,7 +413,9 @@ const formatSolve = (moves) => {
 }
 
 const solveAction = () => {
+	const start = Date.now();
 	answer.innerHTML = formatSolve(solve());
+	console.log(Date.now() - start);
 }
 
 solveTrigger.addEventListener("click", solveAction);
