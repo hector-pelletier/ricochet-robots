@@ -106,7 +106,7 @@ displayedBoardCells[R.y][R.x].classList.toggle("red");
 displayedBoardCells[G.y][G.x].classList.toggle("green");
 displayedBoardCells[B.y][B.x].classList.toggle("blue");
 displayedBoardCells[Y.y][Y.x].classList.toggle("yellow");
-displayedBoardCells[GOAL.y][GOAL.x].style.backgroundColor = "orange";
+displayedBoardCells[GOAL.y][GOAL.x].classList.toggle("goal");
 
 /*	Handling the setup of pieces
 */

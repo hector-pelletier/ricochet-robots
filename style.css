@@ -13,6 +13,7 @@
 	--green-color: #027333;
 	--blue-color: #023373;
 	--yellow-color: #F29F05;
+	--goal-color: #8952B0;
 }
 
 body {
@@ -82,4 +83,9 @@ button.solve {
 
 #board div.yellow {
 	background-color: var(--yellow-color);
+}
+
+#board div.goal {
+	background: radial-gradient(var(--goal-color) 0%, var(--goal-color) 20%, var(--grid-background-color) 20%, var(--grid-background-color) 40%, var(--goal-color) 40%, var(--goal-color) 60%, var(--grid-background-color) 60%);
+	background-repeat: no-repeat;
 }
