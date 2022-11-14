@@ -13,8 +13,8 @@ I also intend to use it to be as obnoxious as possible around the giant board at
 
 ### Functionalities
 
-- [ ] Give the option to modify the board layout.
-- [ ] Give a way to set the position of the robots.
+- [x] Give the option to modify the board layout.
+- [x] Give a way to set the position of the robots.
 - [ ] \(Optional) Handle the free-for-all goal tile.
 - [ ] \(Optional) Handle correctly solutions with the same number of moves (the fewer robots moved the better).
 
@@ -25,5 +25,5 @@ I also intend to use it to be as obnoxious as possible around the giant board at
 
 ### UI
 
-- [ ] Improvements of the UI for use on a mobile screen.
-- [ ] \(Not sure) Through usage of `canvas` ? Just with resizeable HTML elements ? For the moment priorizing the latter.
+- [x] Improvements of the UI for use on a mobile screen.
+- [x] \(Not sure) Through usage of `canvas` ? Just with resizeable HTML elements ? For the moment priorizing the latter.
