@@ -46,7 +46,7 @@ const E = 0b0100;
 const W = 0b1000;
 const O = 0;
 
-const board = [
+let board = [
 	[N+W,N  ,N  ,N+E,N+W,N  ,N  ,N  ,N  ,N+E,N+W,N  ,N  ,N  ,N  ,N+E,],
 	[W  ,O  ,O  ,O  ,O  ,O  ,O  ,O  ,O  ,O  ,O  ,O  ,O  ,S+E,W  ,E+S,],
 	[W  ,O  ,O  ,O  ,O  ,S+E,W  ,O  ,O  ,S  ,O  ,O  ,O  ,N  ,O  ,E+N,],
@@ -64,6 +64,10 @@ const board = [
 	[W  ,O  ,O  ,S+E,W  ,O  ,O  ,O  ,O  ,E  ,N+W,O  ,O  ,O  ,O  ,E  ,],
 	[S+W,S  ,S  ,S+N,S+E,S+W,S  ,S  ,S  ,S  ,S  ,S+E,S+W,S  ,S  ,S+E,],
 ];
+
+if (sessionStorage.getItem("board")) {
+	board = JSON.parse(sessionStorage.getItem("board"));
+}
 
 /*	How the board should be displayed
 */
@@ -207,6 +211,7 @@ const getWallSetupFun = (i, j) => {
 				displayedBoardCells[i][j].style.borderTop = (board[i][j] & N) ? "solid" : "none";
 				displayedBoardCells[i-1][j].style.borderBottom = (board[i][j] & N) ? "solid" : "none";
 			}
+			sessionStorage.setItem("board", JSON.stringify(board));
 		};
 		up.addEventListener("click", toggleUpperWall);
 		
@@ -219,6 +224,7 @@ const getWallSetupFun = (i, j) => {
 				displayedBoardCells[i][j].style.borderBottom = (board[i][j] & S) ? "solid" : "none";
 				displayedBoardCells[i+1][j].style.borderTop = (board[i][j] & S) ? "solid" : "none";
 			}
+			sessionStorage.setItem("board", JSON.stringify(board));
 		};
 		down.addEventListener("click", toggleBottomWall);
 		
@@ -231,6 +237,7 @@ const getWallSetupFun = (i, j) => {
 				displayedBoardCells[i][j].style.borderRight = (board[i][j] & E) ? "solid" : "none";
 				displayedBoardCells[i][j+1].style.borderLeft = (board[i][j] & E) ? "solid" : "none";
 			}
+			sessionStorage.setItem("board", JSON.stringify(board));
 		};
 		right.addEventListener("click", toggleRightWall);
 		
@@ -243,6 +250,7 @@ const getWallSetupFun = (i, j) => {
 				displayedBoardCells[i][j].style.borderLeft = (board[i][j] & W) ? "solid" : "none";
 				displayedBoardCells[i][j-1].style.borderRight = (board[i][j] & W) ? "solid" : "none";
 			}
+			sessionStorage.setItem("board", JSON.stringify(board));
 		};
 		left.addEventListener("click", toggleLeftWall);
 		

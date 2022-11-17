@@ -13,7 +13,7 @@
 	--green-color: #027333;
 	--blue-color: #023373;
 	--yellow-color: #F29F05;
-	--goal-color: #8952B0;
+	--goal-color: #7E133D;
 }
 
 body {
@@ -53,6 +53,7 @@ button.solve {
 	grid-template-columns: repeat(16, 1fr);
 	
 	background-color: var(--walls-color);
+	box-shadow: 0.3em 0.3em var(--walls-color);
 }
 
 /* Cells */
@@ -67,6 +68,14 @@ button.solve {
 	aspect-ratio: 1/1;
 	align-items: center;
 	box-sizing: border-box;
+	position:relative;
+	top: 0em;
+	left: 0em;
+}
+
+#board div:hover {
+	top: -0.2em;
+	left: -0.2em;
 }
 
 #board div.red {
