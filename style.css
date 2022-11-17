@@ -98,3 +98,23 @@ button.solve {
 	background: radial-gradient(var(--goal-color) 0%, var(--goal-color) 20%, var(--grid-background-color) 20%, var(--grid-background-color) 40%, var(--goal-color) 40%, var(--goal-color) 60%, var(--grid-background-color) 60%);
 	background-repeat: no-repeat;
 }
+
+#board div.north {
+	border-top-width: medium;
+}
+
+#board div.south {
+	border-bottom-width: medium;
+}
+
+#board div.east {
+	border-right-width: medium;
+}
+
+#board div.west {
+	border-left-width: medium;
+}
+
+#board div.selected {
+	background-color: salmon;
+}

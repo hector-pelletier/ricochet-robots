@@ -3,14 +3,6 @@
 	2022
 */
 
-/*	Search principle:
-	We use a tree search, breath-first.
-	Some pruning is done using a hash set.
-	(Later) Once a solution is found the other possibilities are looked at,
-	to optimize the number of robots used.
-	(Later) More can be pruned ? If a solution has been found in n moves, can there be a shorter one ?
-*/
-
 /*	Get DOM elements
 */
 
@@ -35,6 +27,29 @@ for (let i = 0; i < 16; ++i) {
 		displayedBoard.appendChild(cell);
 		displayedBoardCells[i].push(cell);
 	}
+}
+
+
+const updateCellWallsStyle = (cell, i, j) => {
+	cell.classList.remove("north", "south", "east", "west");
+	cell.classList.toggle("north", board[i][j] & N);
+	cell.classList.toggle("south", board[i][j] & S);
+	cell.classList.toggle("east", board[i][j] & E);
+	cell.classList.toggle("west", board[i][j] & W);
+}
+
+const updateCellRobotsStyle = (cell, i, j) => {
+	cell.classList.remove("red", "green", "blue", "yellow", "goal");
+	cell.classList.toggle("red", R.x == j && R.y == i);
+	cell.classList.toggle("green", G.x == j && G.y == i);
+	cell.classList.toggle("blue", B.x == j && B.y == i);
+	cell.classList.toggle("yellow", Y.x == j && Y.y == i);
+	cell.classList.toggle("goal", GOAL.x == j && GOAL.y == i);
+}
+
+const updateCellStyle = (cell, i, j) => {
+	updateCellWallsStyle(cell, i, j);
+	updateCellRobotsStyle(cell, i, j);
 }
 
 /* 	Board representation
@@ -69,32 +84,27 @@ if (sessionStorage.getItem("board")) {
 	board = JSON.parse(sessionStorage.getItem("board"));
 }
 
-/*	How the board should be displayed
+
+/* 	Initial position of the robots and goal
 */
 
-for (let i = 0; i < 16; ++i) {
-	for (let j = 0; j < 16; ++j) {
-		cell = displayedBoardCells[i][j];
-		walls = board[i][j];
-		cell.style.borderTopWidth = (walls & N) ? "medium" : "thin";
-		cell.style.borderLeftWidth = (walls & W) ? "medium" : "thin";
-		cell.style.borderRightWidth = (walls & E) ? "medium" : "thin";
-		cell.style.borderBottomWidth = (walls & S) ? "medium" : "thin";
-	}
+let R = {x: 0, y: 0,};
+let G = {x: 12,y: 5,};
+let B = {x: 1, y: 2,};
+let Y = {x: 7, y: 4,};
+let GOAL = {x: 1, y: 13,};
+
+if (sessionStorage.getItem("pieces")) {
+	pieces = JSON.parse(sessionStorage.getItem("pieces"));
+	R = pieces.R;
+	G = pieces.G;
+	B = pieces.B;
+	Y = pieces.Y;
+	GOAL = pieces.GOAL;
 }
 
-/* 	Initial position of the robots
+/* Aim of the puzzle
 */
-
-const R = {x: 0, y: 0,};
-const G = {x: 12,y: 5,};
-const B = {x: 1, y: 2,};
-const Y = {x: 7, y: 4,};
-
-/*	Goal of the puzzle
-*/
-
-const GOAL = {x: 1, y: 13,};
 
 let goalBot = "red";
 
@@ -103,14 +113,15 @@ const isSolved = (r, g, b, y) => {
 	return bot.x == GOAL.x && bot.y == GOAL.y;
 };
 
-/*	Display robots and goal
+/*	Display robots, goals, walls.
 */
 
-displayedBoardCells[R.y][R.x].classList.toggle("red");
-displayedBoardCells[G.y][G.x].classList.toggle("green");
-displayedBoardCells[B.y][B.x].classList.toggle("blue");
-displayedBoardCells[Y.y][Y.x].classList.toggle("yellow");
-displayedBoardCells[GOAL.y][GOAL.x].classList.toggle("goal");
+for (let i = 0; i < 16; ++i) {
+	for (let j = 0; j < 16; ++j) {
+		cell = displayedBoardCells[i][j];
+		updateCellStyle(cell, i, j);
+	}
+}
 
 /*	Handling the setup of pieces
 */
@@ -130,13 +141,16 @@ const unsetSetupMode = () => {
 	}
 };
 
-const setSelectFunction = (X, Y) => {
+const setSelectFunction = (i, j) => {
 	const setupHook = () => {
 		bot = initialPos[piecesSetupState];
-		displayedBoardCells[bot.y][bot.x].style.backgroundColor = "#eeeee4";
-		bot.x = X;
-		bot.y = Y;
-		displayedBoardCells[bot.y][bot.x].style.backgroundColor = piecesSetupState;
+		let oldX = bot.x;
+		let oldY = bot.y;
+		bot.x = j;
+		bot.y = i;
+		updateCellRobotsStyle(displayedBoardCells[oldY][oldX], oldY, oldX);
+		updateCellRobotsStyle(displayedBoardCells[i][j], i, j);
+		
 		switch(piecesSetupState) {
 			case "red":
 				piecesSetupState = "green";
@@ -152,6 +166,7 @@ const setSelectFunction = (X, Y) => {
 				break;
 			case "orange":
 				unsetSetupMode();
+				sessionStorage.setItem("pieces", JSON.stringify({R: R, G: G, B: B, Y: Y, GOAL: GOAL,}));
 				break;
 		}
 	};
@@ -164,7 +179,7 @@ const setSetupMode = () => {
 	for (let i = 0; i < 16; ++i) {
 		for (let j = 0; j < 16; ++j) {
 			cell = displayedBoardCells[i][j];
-			cell.addEventListener("click", setSelectFunction(j, i));
+			cell.addEventListener("click", setSelectFunction(i, j));
 		}
 	}
 };
@@ -197,9 +212,18 @@ goalBotButton.addEventListener("click", selectBotHook);
 */
 
 let boardSetupState = false;
+let selected = null;
 
 const getWallSetupFun = (i, j) => {
 	const setupCellFun = () => {
+		
+		if (selected) {
+			displayedBoardCells[selected.i][selected.j].classList.toggle("selected");
+		}
+		
+		selected = {i: i, j: j};
+		displayedBoardCells[i][j].classList.toggle("selected");
+		
 		contextMenu.innerHTML = '';
 		
 		const up = document.createElement("button");
