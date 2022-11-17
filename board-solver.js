@@ -232,8 +232,8 @@ const getWallSetupFun = (i, j) => {
 			if (i > 0) {
 				board[i][j] ^= N;
 				board[i-1][j] ^= S;
-				displayedBoardCells[i][j].style.borderTop = (board[i][j] & N) ? "solid" : "none";
-				displayedBoardCells[i-1][j].style.borderBottom = (board[i][j] & N) ? "solid" : "none";
+				updateCellWallsStyle(displayedBoardCells[i][j], i, j);
+				updateCellWallsStyle(displayedBoardCells[i-1][j], i-1, j);
 			}
 			sessionStorage.setItem("board", JSON.stringify(board));
 		};
@@ -245,8 +245,8 @@ const getWallSetupFun = (i, j) => {
 			if (i < 15) {
 				board[i][j] ^= S;
 				board[i+1][j] ^= N;
-				displayedBoardCells[i][j].style.borderBottom = (board[i][j] & S) ? "solid" : "none";
-				displayedBoardCells[i+1][j].style.borderTop = (board[i][j] & S) ? "solid" : "none";
+				updateCellWallsStyle(displayedBoardCells[i][j], i, j);
+				updateCellWallsStyle(displayedBoardCells[i+1][j], i+1, j);
 			}
 			sessionStorage.setItem("board", JSON.stringify(board));
 		};
@@ -258,8 +258,8 @@ const getWallSetupFun = (i, j) => {
 			if (j < 15) {
 				board[i][j] ^= E;
 				board[i][j+1] ^= W;
-				displayedBoardCells[i][j].style.borderRight = (board[i][j] & E) ? "solid" : "none";
-				displayedBoardCells[i][j+1].style.borderLeft = (board[i][j] & E) ? "solid" : "none";
+				updateCellWallsStyle(displayedBoardCells[i][j], i, j);
+				updateCellWallsStyle(displayedBoardCells[i][j+1], i, j+1);
 			}
 			sessionStorage.setItem("board", JSON.stringify(board));
 		};
@@ -271,8 +271,8 @@ const getWallSetupFun = (i, j) => {
 			if (j > 0) {
 				board[i][j] ^= W;
 				board[i][j-1] ^= E;
-				displayedBoardCells[i][j].style.borderLeft = (board[i][j] & W) ? "solid" : "none";
-				displayedBoardCells[i][j-1].style.borderRight = (board[i][j] & W) ? "solid" : "none";
+				updateCellWallsStyle(displayedBoardCells[i][j], i, j);
+				updateCellWallsStyle(displayedBoardCells[i][j-1], i, j-1);
 			}
 			sessionStorage.setItem("board", JSON.stringify(board));
 		};
